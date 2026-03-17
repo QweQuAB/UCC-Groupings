@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>UCC BSc IT — Group Assignments</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── TOKENS ── */
+[data-theme="dark"] {
+  --bg:#0f0f0e; --bg2:#1a1a17; --surface:#1e1e1b; --surface2:#252521;
+  --text:#e8e8e2; --text-sec:#8a8a82;
+  --border:rgba(255,255,255,0.07); --border-med:rgba(255,255,255,0.13);
+  --hbg:#080f20;
+}
+[data-theme="light"] {
+  --bg:#f4f3ef; --bg2:#eceae5; --surface:#ffffff; --surface2:#f9f8f5;
+  --text:#181816; --text-sec:#72726c;
+  --border:rgba(0,0,0,0.08); --border-med:rgba(0,0,0,0.15);
+  --hbg:#0d1b3e;
+}
+
+body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; transition:background .25s,color .25s; }
+
+/* ── PAGE ROUTER ── */
+.page { display:none; min-height:100vh; }
+.page.active { display:block; }
+
+/* ══════════════════════════════════════════════
+   HOME / OVERVIEW PAGE
+══════════════════════════════════════════════ */
+#page-home { display:none; flex-direction:column; }
+#page-home.active { display:flex; }
+
+/* Hero */
+.hero {
+  background:var(--hbg); padding:2.5rem 1.5rem 2rem;
+  position:relative; overflow:hidden; flex-shrink:0;
+}
+#cSvg { position:absolute; inset:0; pointer-events:none; }
+.hero-inner { position:relative; z-index:2; max-width:960px; margin:0 auto; }
+.hero-top { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+.hero-title { font-size:26px; font-weight:700; letter-spacing:-.5px; color:#f0f4ff; line-height:1.15; }
+.hero-sub   { font-size:13px; color:#93b4d4; margin-top:5px; }
+.hero-badges { display:flex; gap:7px; margin-top:14px; flex-wrap:wrap; }
+.hero-badge { font-size:11px; padding:3px 10px; border-radius:99px; background:rgba(255,255,255,.08); color:rgba(255,255,255,.65); border:.5px solid rgba(255,255,255,.14); }
+.hero-badge.hi { background:rgba(59,130,246,.2); color:#93c5fd; border-color:rgba(96,165,250,.3); }
+.hero-right { display:flex; gap:8px; align-items:flex-start; }
+
+/* Classy buttons */
+.classy-btn {
+  font-family:inherit; font-size:13px; font-weight:500;
+  cursor:pointer; white-space:nowrap;
+  display:inline-flex; align-items:center; gap:7px;
+  border-radius:8px; padding:9px 16px;
+  transition:transform .15s, box-shadow .15s, background .15s;
+  position:relative; overflow:hidden;
+}
+.classy-btn::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 60%); pointer-events:none; }
+.classy-btn:hover  { transform:translateY(-1px); }
+.classy-btn:active { transform:translateY(0); }
+.cb-primary { background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 100%); border:.5px solid rgba(147,197,253,.3); color:#fff; box-shadow:0 2px 12px rgba(29,78,216,.4),inset 0 1px 0 rgba(255,255,255,.15); }
+.cb-primary:hover { box-shadow:0 4px 20px rgba(29,78,216,.55),inset 0 1px 0 rgba(255,255,255,.2); }
+.cb-ghost { background:rgba(255,255,255,.06); border:.5px solid rgba(255,255,255,.22); color:#e0eaff; box-shadow:0 2px 8px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08); }
+.cb-ghost:hover { background:rgba(255,255,255,.11); }
+.cb-icon { width:17px; height:17px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-style:normal; }
+.cb-primary .cb-icon { background:rgba(255,255,255,.18); }
+.cb-ghost   .cb-icon { background:rgba(255,255,255,.1); }
+
+.theme-btn { background:rgba(255,255,255,.08); border:.5px solid rgba(255,255,255,.18); border-radius:8px; width:36px; height:36px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff; transition:background .15s; flex-shrink:0; }
+.theme-btn:hover { background:rgba(255,255,255,.16); }
+
+/* Home content area */
+.home-content { flex:1; max-width:960px; margin:0 auto; width:100%; padding:1.5rem 1.25rem 4rem; }
+
+/* Global search */
+.gsearch-wrap { margin-bottom:1.5rem; }
+.gsearch-box {
+  display:flex; align-items:center; gap:10px;
+  background:var(--surface); border:.5px solid var(--border-med);
+  border-radius:12px; padding:11px 16px;
+  transition:border-color .15s, box-shadow .15s;
+}
+.gsearch-box:focus-within { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.15); }
+.gsearch-icon { font-size:16px; color:var(--text-sec); flex-shrink:0; }
+.gsearch-input { flex:1; font-family:inherit; font-size:14px; background:transparent; color:var(--text); border:none; outline:none; }
+.gsearch-input::placeholder { color:var(--text-sec); }
+.gsearch-clear { background:none; border:none; color:var(--text-sec); cursor:pointer; font-size:20px; line-height:1; display:none; padding:0 2px; }
+.gsearch-clear.on { display:block; }
+.gsearch-hint { font-size:11px; color:var(--text-sec); margin-top:5px; padding-left:4px; }
+.gsearch-results { display:none; background:var(--surface); border:.5px solid var(--border-med); border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,.15); margin-top:8px; }
+.gsearch-results.open { display:block; }
+.gsr-header { padding:9px 16px; border-bottom:.5px solid var(--border); font-size:12px; color:var(--text-sec); }
+.gsr-student { padding:12px 16px; border-bottom:.5px solid var(--border); }
+.gsr-student:last-child { border-bottom:none; }
+.gsr-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.gsr-av { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff; flex-shrink:0; }
+.gsr-name { font-size:15px; font-weight:600; color:var(--text); }
+.gsr-meta { font-size:12px; color:var(--text-sec); margin-top:2px; }
+.gsr-groups-lbl { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.4px; color:var(--text-sec); margin-bottom:7px; }
+.gsr-pills { display:flex; flex-wrap:wrap; gap:7px; }
+.gsr-pill { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:500; padding:5px 12px; border-radius:99px; cursor:pointer; border:.5px solid rgba(255,255,255,.12); color:#fff; transition:transform .12s, filter .12s; text-decoration:none; }
+.gsr-pill:hover { transform:translateY(-1px); filter:brightness(1.15); }
+.gsr-no-results { padding:2rem; text-align:center; color:var(--text-sec); font-size:13px; }
+
+/* Section label */
+.section-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; color:var(--text-sec); margin-bottom:.9rem; }
+
+/* Stat cards */
+.stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:1.75rem; }
+@media(max-width:600px){ .stat-grid { grid-template-columns:repeat(2,1fr); } }
+.stat-card { background:var(--surface); border:.5px solid var(--border-med); border-radius:12px; padding:1rem 1.1rem; }
+.stat-lbl { font-size:11px; color:var(--text-sec); text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; }
+.stat-val { font-size:28px; font-weight:700; color:var(--text); line-height:1; }
+.stat-sub { font-size:11px; color:var(--text-sec); margin-top:3px; }
+
+/* Bar chart */
+.chart-card { background:var(--surface); border:.5px solid var(--border-med); border-radius:12px; padding:1.1rem 1.25rem 1rem; margin-bottom:1.75rem; }
+.chart-title { font-size:12px; font-weight:600; color:var(--text-sec); text-transform:uppercase; letter-spacing:.4px; margin-bottom:1rem; }
+.bars { display:flex; align-items:flex-end; gap:8px; height:90px; }
+.bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; }
+.bar { width:100%; border-radius:5px 5px 0 0; min-height:4px; transition:height .5s cubic-bezier(.34,1.56,.64,1); }
+.bar-val  { font-size:11px; font-weight:700; color:var(--text); }
+.bar-name { font-size:9px; color:var(--text-sec); text-align:center; line-height:1.2; max-width:56px; }
+
+/* Course cards */
+.course-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+.course-card {
+  border-radius:14px; overflow:hidden; border:.5px solid var(--border-med);
+  cursor:pointer; transition:transform .15s, box-shadow .15s;
+  background:var(--surface);
+}
+.course-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,0,0,.18); }
+.course-card:active { transform:translateY(0); }
+.cc-header {
+  padding:1rem 1.1rem; display:flex; align-items:center; gap:11px;
+  position:relative; overflow:hidden;
+}
+.cc-header::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,transparent 55%); pointer-events:none; }
+.cc-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; background:rgba(255,255,255,.18); flex-shrink:0; position:relative; z-index:1; }
+.cc-title { font-size:15px; font-weight:700; color:#fff; position:relative; z-index:1; }
+.cc-group { font-size:11px; color:rgba(255,255,255,.6); margin-top:2px; position:relative; z-index:1; }
+.cc-body  { padding:.85rem 1.1rem; }
+.cc-topic { font-size:13px; color:var(--text); font-weight:500; line-height:1.4; margin-bottom:8px; }
+.cc-footer { display:flex; align-items:center; justify-content:space-between; }
+.cc-count { font-size:11px; padding:2px 9px; border-radius:99px; background:var(--bg2); color:var(--text-sec); font-weight:500; }
+.cc-arrow { font-size:18px; color:var(--text-sec); transition:transform .15s; }
+.course-card:hover .cc-arrow { transform:translateX(4px); color:var(--text); }
+
+/* ══════════════════════════════════════════════
+   COURSE PAGE
+══════════════════════════════════════════════ */
+#page-course { display:none; flex-direction:column; min-height:100vh; }
+#page-course.active { display:flex; }
+
+/* Course page top bar */
+.cp-topbar {
+  background:var(--surface); border-bottom:.5px solid var(--border-med);
+  padding:.75rem 1.25rem; display:flex; align-items:center; gap:12px;
+  position:sticky; top:0; z-index:50;
+}
+.cp-back {
+  background:none; border:.5px solid var(--border-med); border-radius:8px;
+  padding:6px 12px; font-family:inherit; font-size:13px; font-weight:500;
+  color:var(--text); cursor:pointer; display:flex; align-items:center; gap:5px;
+  transition:background .12s; white-space:nowrap; flex-shrink:0;
+}
+.cp-back:hover { background:var(--bg2); }
+.cp-back-arrow { font-size:16px; }
+.cp-topbar-title { font-size:15px; font-weight:600; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cp-topbar-right { display:flex; gap:6px; flex-shrink:0; }
+
+/* Course hero strip */
+.cp-hero {
+  padding:.9rem 1.25rem; display:flex; align-items:flex-start; gap:12px;
+  border-bottom:.5px solid rgba(255,255,255,.1);
+  flex-shrink:0;
+}
+.cp-icon { width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:21px; flex-shrink:0; }
+.cp-info { flex:1; min-width:0; }
+.cp-sup   { font-size:11px; text-transform:uppercase; letter-spacing:.5px; font-weight:500; margin-bottom:3px; }
+.cp-title { font-size:16px; font-weight:700; color:#fff; line-height:1.3; }
+.cp-sub   { font-size:12px; margin-top:3px; opacity:.75; }
+.cp-edit-btn { background:rgba(255,255,255,.12); border:.5px solid rgba(255,255,255,.25); color:#fff; border-radius:7px; font-size:12px; padding:5px 12px; cursor:pointer; font-family:inherit; font-weight:500; transition:background .12s; white-space:nowrap; flex-shrink:0; }
+.cp-edit-btn:hover { background:rgba(255,255,255,.22); }
+
+/* Course content */
+.cp-content { flex:1; display:flex; flex-direction:column; max-width:960px; width:100%; margin:0 auto; }
+
+/* Toolbar */
+.cp-toolbar { padding:10px 1.25rem; border-bottom:.5px solid var(--border); display:flex; align-items:center; gap:8px; background:var(--surface); }
+.cp-toolbar input { flex:1; font-family:inherit; font-size:13px; background:var(--bg2); color:var(--text); border:.5px solid var(--border-med); border-radius:7px; padding:7px 10px; outline:none; transition:border-color .15s; }
+.cp-toolbar input:focus { border-color:#60a5fa; }
+.cp-count { font-size:12px; color:var(--text-sec); white-space:nowrap; }
+.add-stu-btn { font-family:inherit; font-size:12px; font-weight:500; padding:7px 13px; border-radius:7px; cursor:pointer; white-space:nowrap; border:.5px solid var(--border-med); background:var(--surface2); color:var(--text); display:inline-flex; align-items:center; gap:5px; transition:background .12s; }
+.add-stu-btn:hover { background:var(--bg2); }
+
+/* Table container — scrollable vertically, NOT horizontally */
+.cp-table-wrap { flex:1; overflow-y:auto; }
+
+/* ── TABLE (desktop full / mobile card) ── */
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead tr { background:var(--bg2); position:sticky; top:0; z-index:5; }
+th { padding:9px 14px; text-align:left; font-size:11px; font-weight:500; color:var(--text-sec); text-transform:uppercase; letter-spacing:.4px; border-bottom:.5px solid var(--border); cursor:pointer; user-select:none; white-space:nowrap; }
+th:hover { color:var(--text); }
+th.active { color:var(--text); }
+th .si { margin-left:2px; opacity:.35; }
+th.active .si { opacity:1; }
+td { padding:9px 14px; border-bottom:.5px solid var(--border); vertical-align:middle; }
+tbody tr:last-child td { border-bottom:none; }
+tbody tr:hover td { background:var(--bg2); }
+td.num   { color:var(--text-sec); font-size:11px; width:32px; }
+td.idx   { font-family:'Consolas','Courier New',monospace; font-size:11px; color:var(--text-sec); }
+td.ph    { font-size:12px; color:var(--text-sec); }
+.av { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; font-size:10px; font-weight:700; margin-right:8px; vertical-align:middle; flex-shrink:0; color:#fff; }
+.edit-btn { padding:4px 8px; font-size:13px; border:none; background:transparent; color:var(--text-sec); cursor:pointer; border-radius:6px; }
+.edit-btn:hover { background:var(--border); color:var(--text); }
+.no-res { text-align:center; padding:3rem; color:var(--text-sec); font-size:13px; }
+
+/* ── MOBILE CARDS (≤ 768px) ── */
+@media(max-width:768px){
+  thead { display:none; }
+  tbody tr {
+    display:block; background:var(--surface); border:.5px solid var(--border-med);
+    border-radius:10px; margin:.5rem .75rem; padding:.75rem .9rem;
+    position:relative; cursor:pointer; transition:background .1s;
+  }
+  tbody tr:hover td { background:transparent; }
+  tbody tr:active { background:var(--bg2); }
+  td { display:flex; align-items:center; justify-content:space-between; padding:3px 0; border:none; font-size:13px; }
+  td::before { content:attr(data-label); font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.4px; color:var(--text-sec); flex-shrink:0; min-width:55px; }
+  td.num { display:none; }
+  td.idx { font-size:11px; }
+  td.mob-name { padding-bottom:6px; margin-bottom:2px; border-bottom:.5px solid var(--border); }
+  td.mob-name::before { display:none; }
+  .mob-name-inner { display:flex; align-items:center; justify-content:space-between; width:100%; }
+  .mob-name-left  { display:flex; align-items:center; gap:9px; }
+  .mob-dots { display:flex; gap:3px; }
+  .mob-dot  { width:7px; height:7px; border-radius:50%; }
+  .mob-chevron { font-size:18px; color:var(--text-sec); }
+  td.mob-edit { display:none; }
+  .cp-toolbar { flex-wrap:wrap; }
+  .cp-count { order:-1; width:100%; }
+  .add-stu-btn { width:100%; justify-content:center; }
+}
+@media(min-width:769px){
+  .mob-name-inner .mob-dots { display:none; }
+  .mob-chevron { display:none; }
+  td.mob-name::before { display:none; }
+  tbody tr { cursor:default; }
+}
+
+/* ── MODALS ── */
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(3px); }
+.overlay.open { display:flex; }
+.modal { background:var(--surface); border:.5px solid var(--border-med); border-radius:14px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; box-shadow:0 24px 70px rgba(0,0,0,.45); }
+.modal-hd { padding:1.1rem 1.25rem .8rem; border-bottom:.5px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.modal-hd h2 { font-size:16px; font-weight:600; }
+.modal-close { background:none; border:none; font-size:20px; color:var(--text-sec); cursor:pointer; padding:2px 6px; border-radius:4px; line-height:1; }
+.modal-close:hover { background:var(--bg2); color:var(--text); }
+.modal-body { padding:1.25rem; display:flex; flex-direction:column; gap:1rem; }
+.modal-foot { padding:.9rem 1.25rem; border-top:.5px solid var(--border); display:flex; justify-content:flex-end; align-items:center; gap:8px; }
+.field { display:flex; flex-direction:column; gap:5px; }
+.field label { font-size:11px; font-weight:600; color:var(--text-sec); text-transform:uppercase; letter-spacing:.4px; }
+.field input,.field textarea,.field select { font-family:inherit; font-size:13px; background:var(--bg2); color:var(--text); border:.5px solid var(--border-med); border-radius:7px; padding:8px 10px; outline:none; width:100%; transition:border-color .15s; }
+.field input:focus,.field textarea:focus { border-color:#60a5fa; }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.btn { font-family:inherit; font-size:13px; font-weight:500; cursor:pointer; border-radius:7px; padding:7px 14px; border:.5px solid var(--border-med); background:var(--surface2); color:var(--text); display:inline-flex; align-items:center; gap:6px; transition:background .12s; white-space:nowrap; }
+.btn:hover { background:var(--bg2); }
+.btn-primary { background:#1e40af; color:#fff; border-color:#1e40af; }
+.btn-primary:hover { background:#1d3a9e; }
+.btn-danger  { background:#991b1b; color:#fff; border-color:#991b1b; }
+.btn-danger:hover { background:#7f1d1d; }
+.btn-sm { font-size:12px; padding:5px 10px; }
+.color-presets { display:flex; gap:7px; flex-wrap:wrap; }
+.color-preset { width:22px; height:22px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:transform .1s,border-color .1s; }
+.color-preset:hover,.color-preset.sel { transform:scale(1.25); border-color:var(--text); }
+.color-row { display:flex; align-items:center; gap:8px; margin-top:8px; }
+.color-row input[type=color] { width:36px; height:36px; padding:2px; border-radius:6px; cursor:pointer; border:.5px solid var(--border-med); background:none; }
+.course-checks { display:flex; flex-wrap:wrap; gap:8px; }
+.course-check { display:flex; align-items:center; gap:5px; font-size:13px; cursor:pointer; }
+.course-check input { cursor:pointer; accent-color:#2563eb; }
+.del-zone { display:none; }
+.del-zone.show { display:block; }
+.del-box { background:#fef2f2; border:.5px solid #fca5a5; border-radius:8px; padding:.75rem 1rem; font-size:13px; color:#991b1b; }
+[data-theme="dark"] .del-box { background:#3f1515; border-color:#7f1d1d; color:#fca5a5; }
+.del-box-btns { display:flex; gap:8px; margin-top:10px; }
+
+/* Mobile modal = bottom sheet */
+@media(max-width:768px){
+  .overlay { padding:0; align-items:flex-end; }
+  .modal { border-radius:18px 18px 0 0; max-width:100%; max-height:92vh; }
+  .field-row { grid-template-columns:1fr; }
+}
+@media(min-width:769px){
+  .overlay { align-items:center; padding:1rem; }
+  .modal { border-radius:14px; max-width:480px; }
+  .field-row { grid-template-columns:1fr 1fr; }
+}
+
+/* ── STUDENT POPUP (mobile) ── */
+.stu-overlay { display:none; position:fixed; inset:0; z-index:300; background:rgba(0,0,0,.5); align-items:flex-end; justify-content:center; backdrop-filter:blur(3px); }
+.stu-overlay.open { display:flex; }
+.stu-sheet { background:var(--surface); border-radius:20px 20px 0 0; width:100%; max-width:480px; max-height:88vh; overflow-y:auto; animation:slideUp .22s cubic-bezier(.32,.72,0,1); padding-bottom:env(safe-area-inset-bottom,0); }
+@keyframes slideUp { from{transform:translateY(100%);opacity:.5} to{transform:translateY(0);opacity:1} }
+.sheet-handle { width:36px; height:4px; border-radius:99px; background:var(--border-med); margin:10px auto 0; }
+.sheet-hero { padding:1.1rem 1.25rem 1rem; display:flex; align-items:center; gap:14px; }
+.sheet-av { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:#fff; flex-shrink:0; box-shadow:0 4px 14px rgba(0,0,0,.25); }
+.sheet-name { font-size:17px; font-weight:700; color:var(--text); }
+.sheet-sub  { font-size:12px; color:var(--text-sec); margin-top:3px; }
+.sheet-body { padding:0 1.25rem; }
+.sheet-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:.5px solid var(--border); }
+.sheet-row:last-child { border-bottom:none; }
+.sheet-row-icon { width:32px; height:32px; border-radius:8px; background:var(--bg2); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.sheet-row-lbl { font-size:11px; color:var(--text-sec); text-transform:uppercase; letter-spacing:.4px; margin-bottom:1px; }
+.sheet-row-val { font-size:13px; font-weight:500; color:var(--text); font-family:'Consolas','Courier New',monospace; }
+.sheet-row-val.plain { font-family:inherit; }
+.sheet-groups-lbl { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.4px; color:var(--text-sec); padding:10px 1.25rem 8px; border-top:.5px solid var(--border); }
+.sheet-pills { display:flex; flex-wrap:wrap; gap:7px; padding:0 1.25rem 1rem; }
+.sheet-pill { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:500; padding:6px 12px; border-radius:99px; color:#fff; cursor:pointer; border:.5px solid rgba(255,255,255,.15); transition:transform .12s, filter .12s; }
+.sheet-pill:hover { transform:translateY(-1px); filter:brightness(1.15); }
+.sheet-pill-arr { opacity:.6; font-size:11px; }
+.sheet-foot { padding:.75rem 1.25rem 1.25rem; display:flex; gap:8px; border-top:.5px solid var(--border); }
+.sheet-foot button { flex:1; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HOME PAGE ══════════════ -->
+<div class="page" id="page-home">
+  <div class="hero" id="hero">
+    <svg id="cSvg" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;pointer-events:none;width:100%;height:100%;"></svg>
+    <div class="hero-inner">
+      <div class="hero-top">
+        <div>
+          <div class="hero-title">UCC Main Campus — BSc IT</div>
+          <div class="hero-sub">Group presentation assignments · 2025</div>
+          <div class="hero-badges">
+            <span class="hero-badge">University of Cape Coast</span>
+            <span class="hero-badge hi" id="b-courses">7 Courses</span>
+            <span class="hero-badge hi" id="b-students">23 Students</span>
+          </div>
+        </div>
+        <div class="hero-right">
+          <button class="classy-btn cb-primary" onclick="openAddStudentModal()"><span class="cb-icon">+</span>Add Student</button>
+          <button class="classy-btn cb-ghost"   onclick="openAddCourseModal()"><span class="cb-icon">+</span>Add Course</button>
+          <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-content">
+    <!-- Search -->
+    <div class="gsearch-wrap">
+      <div class="gsearch-box">
+        <span class="gsearch-icon">🔍</span>
+        <input class="gsearch-input" id="gSearchInput" placeholder="Search by name, index number, phone or group…" oninput="runGlobalSearch(this.value)" onkeydown="if(event.key==='Escape')clearGSearch()">
+        <button class="gsearch-clear" id="gSearchClear" onclick="clearGSearch()">×</button>
+      </div>
+      <div class="gsearch-hint">Find yourself to see all your groups — click any group pill to go straight to it.</div>
+      <div class="gsearch-results" id="gSearchResults"></div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="section-label">At a glance</div>
+    <div class="stat-grid" id="statGrid"></div>
+
+    <!-- Bar chart -->
+    <div class="chart-card">
+      <div class="chart-title">Students per course</div>
+      <div class="bars" id="chartBars"></div>
+    </div>
+
+    <!-- Course cards -->
+    <div class="section-label">Course groups — tap to open</div>
+    <div class="course-grid" id="courseGrid"></div>
+  </div>
+</div>
+
+<!-- ══════════════ COURSE PAGE ══════════════ -->
+<div class="page" id="page-course">
+  <div id="cpTopbar" class="cp-topbar">
+    <button class="cp-back" onclick="goHome()"><span class="cp-back-arrow">‹</span> Home</button>
+    <div class="cp-topbar-title" id="cpTopTitle"></div>
+    <div class="cp-topbar-right">
+      <button class="theme-btn" onclick="toggleTheme()" style="width:32px;height:32px;font-size:14px;">☀</button>
+    </div>
+  </div>
+  <div id="cpHero" class="cp-hero" style="background:#111;">
+    <div class="cp-icon" id="cpIcon"></div>
+    <div class="cp-info">
+      <div class="cp-sup"  id="cpSup"></div>
+      <div class="cp-title" id="cpTitle"></div>
+      <div class="cp-sub"  id="cpSub"></div>
+    </div>
+    <button class="cp-edit-btn" id="cpEditBtn">✏ Edit topic</button>
+  </div>
+  <div class="cp-content">
+    <div class="cp-toolbar">
+      <input type="text" id="cpSearch" placeholder="Search students…" oninput="renderCourseTable()">
+      <span class="cp-count" id="cpCount"></span>
+      <button class="add-stu-btn" id="cpAddBtn">+ Add student</button>
+    </div>
+    <div class="cp-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:32px;">#</th>
+            <th id="th-name" class="active" onclick="sortCourse('name')">Name <span class="si">↑</span></th>
+            <th id="th-idx"  onclick="sortCourse('idx')">Index number <span class="si">↕</span></th>
+            <th id="th-phone" onclick="sortCourse('phone')">Phone <span class="si">↕</span></th>
+            <th style="width:44px;"></th>
+          </tr>
+        </thead>
+        <tbody id="cpTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Topic Modal -->
+<div class="overlay" id="topicModal">
+  <div class="modal">
+    <div class="modal-hd"><h2>Edit course topic</h2><button class="modal-close" onclick="closeModal('topicModal')">×</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Course label</label><input id="et-label" type="text"></div>
+      <div class="field-row">
+        <div class="field"><label>Group</label><input id="et-group" type="text"></div>
+        <div class="field"><label>Icon</label><input id="et-icon" type="text" maxlength="2"></div>
+      </div>
+      <div class="field"><label>Unit / Section</label><input id="et-sup" type="text"></div>
+      <div class="field"><label>Topic title</label><input id="et-title" type="text"></div>
+      <div class="field"><label>Topic subtitle</label><input id="et-sub" type="text"></div>
+      <div class="field">
+        <label>Accent colour</label>
+        <div class="color-presets" id="colorPresets"></div>
+        <div class="color-row"><input type="color" id="et-color"><span style="font-size:12px;color:var(--text-sec);">Or pick custom</span></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('topicModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTopicEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit/Add Student Modal -->
+<div class="overlay" id="studentModal">
+  <div class="modal">
+    <div class="modal-hd"><h2 id="sm-title">Student</h2><button class="modal-close" onclick="closeModal('studentModal')">×</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Full name</label><input id="es-name" type="text"></div>
+      <div class="field-row">
+        <div class="field"><label>Index number</label><input id="es-idx" type="text" style="font-family:'Consolas',monospace;font-size:12px;"></div>
+        <div class="field"><label>Phone</label><input id="es-phone" type="text"></div>
+      </div>
+      <div class="field"><label>Enrolled courses</label><div class="course-checks" id="es-courses"></div></div>
+      <div class="del-zone" id="del-confirm">
+        <div class="del-box">Remove this student?
+          <div class="del-box-btns">
+            <button class="btn btn-danger btn-sm" onclick="confirmDeleteStudent()">Yes, remove</button>
+            <button class="btn btn-sm" onclick="document.getElementById('del-confirm').classList.remove('show')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-sm" style="color:#dc2626;border-color:#fca5a5;" onclick="document.getElementById('del-confirm').classList.toggle('show')">Remove</button>
+      <div style="flex:1"></div>
+      <button class="btn" onclick="closeModal('studentModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveStudentEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Course Modal -->
+<div class="overlay" id="addCourseModal">
+  <div class="modal">
+    <div class="modal-hd"><h2>Add new course</h2><button class="modal-close" onclick="closeModal('addCourseModal')">×</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Course label</label><input id="ac-label" type="text" placeholder="e.g. Cybersecurity"></div>
+      <div class="field-row">
+        <div class="field"><label>Group</label><input id="ac-group" type="text" placeholder="e.g. Group 5"></div>
+        <div class="field"><label>Icon</label><input id="ac-icon" type="text" maxlength="2" placeholder="🔒"></div>
+      </div>
+      <div class="field"><label>Unit / Section line</label><input id="ac-sup" type="text"></div>
+      <div class="field"><label>Topic title</label><input id="ac-title" type="text"></div>
+      <div class="field"><label>Topic subtitle</label><input id="ac-sub" type="text"></div>
+      <div class="field">
+        <label>Accent colour</label>
+        <div class="color-presets" id="acColorPresets"></div>
+        <div class="color-row"><input type="color" id="ac-color" value="#be185d"><span style="font-size:12px;color:var(--text-sec);">Or pick custom</span></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('addCourseModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNewCourse()">Add course</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Student Sheet -->
+<div class="stu-overlay" id="stuOverlay" onclick="closeStuSheet(event)">
+  <div class="stu-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-hero" id="shHero">
+      <div class="sheet-av" id="shAv"></div>
+      <div><div class="sheet-name" id="shName"></div><div class="sheet-sub" id="shSub"></div></div>
+    </div>
+    <div class="sheet-body">
+      <div class="sheet-row"><div class="sheet-row-icon">🪪</div><div><div class="sheet-row-lbl">Index number</div><div class="sheet-row-val" id="shIdx"></div></div></div>
+      <div class="sheet-row"><div class="sheet-row-icon">📞</div><div><div class="sheet-row-lbl">Phone</div><div class="sheet-row-val plain" id="shPhone"></div></div></div>
+    </div>
+    <div class="sheet-groups-lbl">Enrolled in <span id="shGroupCount"></span> course group(s)</div>
+    <div class="sheet-pills" id="shPills"></div>
+    <div class="sheet-foot">
+      <button class="btn btn-sm" onclick="closeStuSheetBtn()">Close</button>
+      <button class="btn btn-primary btn-sm" id="shEditBtn">✏ Edit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── DATA ─────────────────────────────────────────────────── */
+let COURSES = [
+  { id:'comm',      label:'Comm Skills',        group:'Group 4', accent:'#1e40af', icon:'✉',  topicSup:'Communicative Skills I · Unit 6 · §4–6 · Group 4',    topicTitle:'Formal Letters: Features, Introduction & Language',  topicSub:'' },
+  { id:'afr',       label:'African Studies',     group:'Group 4', accent:'#064e3b', icon:'🌍', topicSup:'African Studies · Unit 3 · §5–6',                       topicTitle:'Social Change & the African Family',                 topicSub:'National & International Laws and the Family' },
+  { id:'it',        label:'Info Literacy',       group:'Group 1', accent:'#78350f', icon:'🔎', topicSup:'Information Literacy Skills (IT) · Group 1',            topicTitle:'Education and Research',                             topicSub:'' },
+  { id:'mgmt',      label:'Intro to Mgmt',       group:'Group 8', accent:'#4c1d95', icon:'📋', topicSup:'Introduction to Management · Unit 3 · §4–6 · Group 8', topicTitle:'Planning as a Management Function',                  topicSub:'' },
+  { id:'sw',        label:'Software Suite',      group:'Group 7', accent:'#164e63', icon:'💻', topicSup:'Software Suite · Group 7',                              topicTitle:'Topic not yet specified',                            topicSub:'' },
+  { id:'access',    label:'Intro to Computing',  group:'Group 8', accent:'#7f1d1d', icon:'🖥', topicSup:'Introduction to Computing · Group 8',                   topicTitle:'Access Controls',                                    topicSub:'Knowledge-Based Methods · 2FA/MFA · CAPTCHA · Strengths & Weaknesses Compared' },
+  { id:'computing', label:'Maths for Computing', group:'Group 3', accent:'#065f46', icon:'🔢', topicSup:'Mathematics for Computing · Group 3',                   topicTitle:'Decimal ↔ Binary Conversion via Octal',              topicSub:'i. Convert decimal to binary via octal · ii. Convert 3451.4236 to binary via octal' }
+];
+let STUDENTS = [
+  {id:1,  name:'Lawrence Abakah-Turkson',    idx:'BSCIT/CR/01/25/0008', phone:'0244692571', courses:['comm','afr','mgmt']},
+  {id:2,  name:'Abigail Koomson',             idx:'BSCIT/AS/22/25/0001', phone:'0503467585', courses:['comm','afr']},
+  {id:3,  name:'Abdul Jafar Musah Appiah',    idx:'BSCIT/CR/01/25/0006', phone:'0553111756', courses:['comm','afr']},
+  {id:4,  name:'Daniel Golo',                 idx:'BSCIT/CR/01/30/0004', phone:'0559574837', courses:['comm','afr']},
+  {id:5,  name:'Richmond Krampah',            idx:'BSCIT/WR/06/25/0001', phone:'0531863404', courses:['comm','afr','it','mgmt']},
+  {id:6,  name:'Salu Haruna',                 idx:'BSCIT/CR/17/25/0001', phone:'0548380326', courses:['comm','afr','sw','access']},
+  {id:7,  name:'Augustine Essel',             idx:'BSCIT/CR/30/25/0001', phone:'0551069398', courses:['comm','afr','it','mgmt','sw','access']},
+  {id:8,  name:'Isaac Baidoo',                idx:'BSCIT/CR/30/25/0002', phone:'0547711296', courses:['comm','afr','mgmt','access']},
+  {id:9,  name:'Andrews Duodu',               idx:'BSCIT/CR/30/25/0004', phone:'0244091829', courses:['comm','afr','it','mgmt','sw','access']},
+  {id:10, name:'Eric Kobina Saah',            idx:'BSCIT/CR/30/25/0006', phone:'0543370067', courses:['comm','afr','access']},
+  {id:11, name:'John Bonal Essuman',          idx:'BSCIT/CR/30/25/0009', phone:'0554141150', courses:['comm','afr','it','mgmt','sw','access','computing']},
+  {id:12, name:'Geli Michael Kofi',           idx:'BSCIT/CR/30/25/0012', phone:'0546831183', courses:['comm','afr','access','computing']},
+  {id:13, name:'Patience Appiah',             idx:'BSCIT/CR/30/25/0014', phone:'0508325698', courses:['comm','afr','sw','access']},
+  {id:14, name:'Blessing Annan-Takyi',        idx:'BSCIT/CR/30/25/0017', phone:'0557296234', courses:['comm','afr','it','mgmt','sw','access']},
+  {id:15, name:'Samuel Odartey Lamptey',      idx:'BSCIT/CR/30/25/0005', phone:'—',          courses:['comm','afr','it','mgmt','sw','access','computing']},
+  {id:16, name:'Nkwantabisah John Klyphord',  idx:'BSCIT/CR/30/25/0018', phone:'0248136699', courses:['comm','afr','it','mgmt','sw','access']},
+  {id:17, name:'Jacob Appiah',                idx:'BSCIT/CR/01/25/0009', phone:'0245604128', courses:['comm','afr']},
+  {id:18, name:'Michael Sackey',              idx:'BSCIT/CR/30/25/0016', phone:'0532918637', courses:['comm','afr','sw','access']},
+  {id:19, name:'Godfred Armah',               idx:'BSCIT/SR/30/25/0001', phone:'—',          courses:['sw']},
+  {id:20, name:'Blude Stephen Kwasi',         idx:'BSCIT/CR/01/25/0018', phone:'—',          courses:['access']},
+  {id:21, name:'Student (BSCIT/CR/30/25/0013)', idx:'BSCIT/CR/30/25/0013', phone:'—',        courses:['computing']},
+  {id:22, name:'Online Student 1',            idx:'— (Online)',           phone:'—',          courses:['computing']},
+  {id:23, name:'Online Student 2',            idx:'— (Online)',           phone:'—',          courses:['computing']}
+];
+
+const PRESETS = ['#1e40af','#064e3b','#78350f','#4c1d95','#164e63','#9d174d','#7f1d1d','#1e3a5f','#365314','#431407'];
+let nextId = 24, nextCI = 0;
+let currentCourseId = null;
+let sortKey = 'name', sortDir = 1;
+let editCourseId = null, editStudentId = null;
+
+/* ── HELPERS ────────────────────────────────────────────── */
+function initials(n){ const p=n.trim().split(/\s+/); return (p[0][0]+(p[p.length-1][0]||'')).toUpperCase(); }
+function darken(h,a){ return '#'+[1,3,5].map(i=>Math.max(0,parseInt(h.slice(i,i+2),16)-a).toString(16).padStart(2,'0')).join(''); }
+function lighten(h,p){ return '#'+[1,3,5].map(i=>Math.min(255,Math.round(parseInt(h.slice(i,i+2),16)+(255-parseInt(h.slice(i,i+2),16))*p)).toString(16).padStart(2,'0')).join(''); }
+function cCols(acc){ return { tabBg:darken(acc,20), iconBg:lighten(acc,0.2), tabText:lighten(acc,0.7) }; }
+function buildPresets(cid,iid){
+  const w=document.getElementById(cid); w.innerHTML='';
+  PRESETS.forEach(col=>{ const d=document.createElement('div'); d.className='color-preset'; d.style.background=col;
+    d.onclick=()=>{ document.getElementById(iid).value=col; w.querySelectorAll('.color-preset').forEach(x=>x.classList.remove('sel')); d.classList.add('sel'); };
+    w.appendChild(d); });
+}
+
+/* ── ROUTER ─────────────────────────────────────────────── */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goHome(){ showPage('home'); updateHeroBadges(); }
+
+function openCourse(cid){
+  currentCourseId = cid;
+  sortKey='name'; sortDir=1;
+  ['name','idx','phone'].forEach(k=>{
+    const th=document.getElementById('th-'+k); if(!th) return;
+    th.classList.toggle('active',k==='name');
+    th.querySelector('.si').textContent=k==='name'?'↑':'↕';
+  });
+  const c = COURSES.find(x=>x.id===cid);
+  const cols = cCols(c.accent);
+  // Topbar
+  document.getElementById('cpTopTitle').textContent = c.label + (c.group?' · '+c.group:'');
+  // Hero
+  document.getElementById('cpHero').style.background = cols.tabBg;
+  document.getElementById('cpIcon').textContent = c.icon;
+  document.getElementById('cpIcon').style.background = cols.iconBg;
+  document.getElementById('cpSup').textContent = c.topicSup || '—';
+  document.getElementById('cpSup').style.color = cols.tabText;
+  document.getElementById('cpTitle').textContent = c.topicTitle || 'No topic set';
+  document.getElementById('cpSub').textContent = c.topicSub || '';
+  document.getElementById('cpSub').style.color = cols.tabText;
+  document.getElementById('cpEditBtn').onclick = ()=>openTopicEdit(cid);
+  // Toolbar
+  document.getElementById('cpSearch').value = '';
+  document.getElementById('cpAddBtn').onclick = ()=>openAddStudentModal(cid);
+  // Table
+  renderCourseTable();
+  showPage('course');
+}
+
+/* ── HOME RENDER ────────────────────────────────────────── */
+function renderHome(){
+  // Stats
+  document.getElementById('statGrid').innerHTML = [
+    {lbl:'Total students', val:STUDENTS.length, sub:'enrolled'},
+    {lbl:'Course groups',  val:COURSES.length,  sub:'this semester'},
+    {lbl:'UCC Main',       val:STUDENTS.filter(s=>s.idx.startsWith('BSCIT/CR')||s.idx.startsWith('BSCIT/WR')||s.idx.startsWith('BSCIT/SR')).length, sub:'campus students'},
+    {lbl:'Multi-group',    val:STUDENTS.filter(s=>s.courses.length>1).length, sub:'in 2+ groups'},
+  ].map(d=>`<div class="stat-card"><div class="stat-lbl">${d.lbl}</div><div class="stat-val">${d.val}</div><div class="stat-sub">${d.sub}</div></div>`).join('');
+
+  // Bar chart
+  const counts = COURSES.map(c=>({c, n:STUDENTS.filter(s=>s.courses.includes(c.id)).length}));
+  const maxN = Math.max(...counts.map(x=>x.n));
+  document.getElementById('chartBars').innerHTML = counts.map(({c,n})=>`
+    <div class="bar-wrap">
+      <div class="bar-val">${n}</div>
+      <div class="bar" style="height:${Math.round((n/maxN)*76)+4}px;background:${c.accent};cursor:pointer;" onclick="openCourse('${c.id}')" title="${c.label}"></div>
+      <div class="bar-name">${c.label}</div>
+    </div>`).join('');
+
+  // Course cards
+  document.getElementById('courseGrid').innerHTML = COURSES.map(c=>{
+    const cols = cCols(c.accent);
+    const n = STUDENTS.filter(s=>s.courses.includes(c.id)).length;
+    return `<div class="course-card" onclick="openCourse('${c.id}')">
+      <div class="cc-header" style="background:${cols.tabBg};">
+        <div class="cc-icon">${c.icon}</div>
+        <div><div class="cc-title">${c.label}</div><div class="cc-group">${c.group||'No group assigned'}</div></div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-topic">${c.topicTitle||'Topic not set'}</div>
+        <div class="cc-footer">
+          <span class="cc-count">${n} student${n!==1?'s':''}</span>
+          <span class="cc-arrow">›</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateHeroBadges();
+}
+
+function updateHeroBadges(){
+  document.getElementById('b-courses').textContent  = COURSES.length+' Courses';
+  document.getElementById('b-students').textContent = STUDENTS.length+' Students';
+}
+
+/* ── COURSE TABLE ───────────────────────────────────────── */
+function renderCourseTable(){
+  const c = COURSES.find(x=>x.id===currentCourseId); if(!c) return;
+  const cols = cCols(c.accent);
+  const q = (document.getElementById('cpSearch').value||'').toLowerCase().trim();
+  let rows = STUDENTS.filter(s=>s.courses.includes(currentCourseId));
+  const total = rows.length;
+  if(q) rows = rows.filter(s=>s.name.toLowerCase().includes(q)||s.idx.toLowerCase().includes(q)||s.phone.includes(q));
+  rows.sort((a,b)=>{ const av=(a[sortKey]||'').toLowerCase(),bv=(b[sortKey]||'').toLowerCase(); return av<bv?-sortDir:av>bv?sortDir:0; });
+  const cnt = document.getElementById('cpCount');
+  if(cnt) cnt.textContent = q?`${rows.length} of ${total}`:`${total} students`;
+  const tbody = document.getElementById('cpTbody'); if(!tbody) return;
+  if(!rows.length){ tbody.innerHTML='<tr><td colspan="5" class="no-res">No students match.</td></tr>'; return; }
+  const dots = (s)=>s.courses.slice(0,5).map(cid=>{ const cx=COURSES.find(x=>x.id===cid); return cx?`<span class="mob-dot" style="background:${cx.accent};"></span>`:''; }).join('');
+  tbody.innerHTML = rows.map((s,i)=>`
+    <tr onclick="openStuSheet(${s.id})">
+      <td class="num">${i+1}</td>
+      <td class="mob-name" data-label="Name">
+        <div class="mob-name-inner">
+          <div class="mob-name-left"><span class="av" style="background:${cols.iconBg};">${initials(s.name)}</span><span style="font-weight:500;">${s.name}</span></div>
+          <div style="display:flex;align-items:center;gap:7px;"><div class="mob-dots">${dots(s)}</div><span class="mob-chevron">›</span></div>
+        </div>
+      </td>
+      <td class="idx" data-label="Index">${s.idx}</td>
+      <td class="ph"  data-label="Phone">${s.phone}</td>
+      <td class="mob-edit"><button class="edit-btn" onclick="event.stopPropagation();openStudentEdit(${s.id})">✏</button></td>
+    </tr>`).join('');
+}
+
+function sortCourse(key){
+  sortDir = sortKey===key?sortDir*-1:1; sortKey=key;
+  ['name','idx','phone'].forEach(k=>{
+    const th=document.getElementById('th-'+k); if(!th) return;
+    th.classList.toggle('active',k===key);
+    th.querySelector('.si').textContent=k===key?(sortDir===1?'↑':'↓'):'↕';
+  });
+  renderCourseTable();
+}
+
+/* ── GLOBAL SEARCH ──────────────────────────────────────── */
+function runGlobalSearch(raw){
+  const q=raw.trim().toLowerCase();
+  const res=document.getElementById('gSearchResults');
+  document.getElementById('gSearchClear').classList.toggle('on',raw.length>0);
+  if(!q){ res.classList.remove('open'); res.innerHTML=''; return; }
+  const matched=STUDENTS.filter(s=>s.name.toLowerCase().includes(q)||s.idx.toLowerCase().includes(q)||s.phone.includes(q)||COURSES.filter(c=>s.courses.includes(c.id)).some(c=>c.group.toLowerCase().includes(q)||c.label.toLowerCase().includes(q)));
+  if(!matched.length){ res.innerHTML=`<div class="gsr-no-results">No students found for "<strong>${raw}</strong>"</div>`; res.classList.add('open'); return; }
+  const tot=matched.reduce((s,x)=>s+x.courses.length,0);
+  let html=`<div class="gsr-header">${matched.length} student${matched.length!==1?'s':''} found · ${tot} enrolment${tot!==1?'s':''}</div>`;
+  matched.forEach(s=>{
+    const fc=COURSES.find(c=>s.courses.includes(c.id));
+    const av=fc?fc.accent:'#374151';
+    html+=`<div class="gsr-student">
+      <div class="gsr-top"><div class="gsr-av" style="background:${av};">${initials(s.name)}</div>
+        <div><div class="gsr-name">${s.name}</div><div class="gsr-meta">${s.idx}${s.phone!=='—'?' · '+s.phone:''}</div></div>
+      </div>
+      <div class="gsr-groups-lbl">Enrolled in ${s.courses.length} group${s.courses.length!==1?'s':''}</div>
+      <div class="gsr-pills">${s.courses.map(cid=>{
+        const c=COURSES.find(x=>x.id===cid); if(!c) return '';
+        const cols=cCols(c.accent);
+        return `<span class="gsr-pill" style="background:${cols.tabBg};" onclick="clearGSearch();openCourse('${c.id}')">${c.icon} ${c.label}${c.group?' · '+c.group:''} <span class="gsr-pill-arr">→</span></span>`;
+      }).join('')}</div>
+    </div>`;
+  });
+  res.innerHTML=html; res.classList.add('open');
+}
+function clearGSearch(){ document.getElementById('gSearchInput').value=''; document.getElementById('gSearchResults').classList.remove('open'); document.getElementById('gSearchResults').innerHTML=''; document.getElementById('gSearchClear').classList.remove('on'); }
+
+/* ── MODALS ─────────────────────────────────────────────── */
+function closeModal(id){ document.getElementById(id).classList.remove('open'); document.getElementById('del-confirm').classList.remove('show'); }
+
+function openTopicEdit(cid){
+  editCourseId=cid;
+  const c=COURSES.find(x=>x.id===cid);
+  document.getElementById('et-label').value=c.label;
+  document.getElementById('et-group').value=c.group;
+  document.getElementById('et-icon').value=c.icon;
+  document.getElementById('et-sup').value=c.topicSup;
+  document.getElementById('et-title').value=c.topicTitle;
+  document.getElementById('et-sub').value=c.topicSub;
+  document.getElementById('et-color').value=c.accent;
+  buildPresets('colorPresets','et-color');
+  document.getElementById('topicModal').classList.add('open');
+}
+function saveTopicEdit(){
+  const c=COURSES.find(x=>x.id===editCourseId);
+  c.label=document.getElementById('et-label').value.trim()||c.label;
+  c.group=document.getElementById('et-group').value.trim();
+  c.icon=document.getElementById('et-icon').value.trim()||c.icon;
+  c.topicSup=document.getElementById('et-sup').value.trim();
+  c.topicTitle=document.getElementById('et-title').value.trim();
+  c.topicSub=document.getElementById('et-sub').value.trim();
+  c.accent=document.getElementById('et-color').value;
+  closeModal('topicModal');
+  if(currentCourseId===editCourseId) openCourse(editCourseId);
+  renderHome();
+}
+
+function buildCourseChecks(sel){
+  const w=document.getElementById('es-courses'); w.innerHTML='';
+  COURSES.forEach(c=>{ const lbl=document.createElement('label'); lbl.className='course-check';
+    const chk=document.createElement('input'); chk.type='checkbox'; chk.value=c.id; chk.checked=sel.includes(c.id);
+    lbl.appendChild(chk); lbl.appendChild(document.createTextNode(c.label)); w.appendChild(lbl); });
+}
+function openStudentEdit(sid){
+  editStudentId=sid;
+  const s=STUDENTS.find(x=>x.id===sid);
+  document.getElementById('sm-title').textContent='Edit student';
+  document.getElementById('es-name').value=s.name;
+  document.getElementById('es-idx').value=s.idx;
+  document.getElementById('es-phone').value=s.phone==='—'?'':s.phone;
+  buildCourseChecks(s.courses);
+  document.getElementById('del-confirm').classList.remove('show');
+  document.getElementById('studentModal').classList.add('open');
+}
+function openAddStudentModal(pre){
+  editStudentId=null;
+  document.getElementById('sm-title').textContent='Add student';
+  document.getElementById('es-name').value='';
+  document.getElementById('es-idx').value='';
+  document.getElementById('es-phone').value='';
+  buildCourseChecks(pre?[pre]:[]);
+  document.getElementById('del-confirm').classList.remove('show');
+  document.getElementById('studentModal').classList.add('open');
+}
+function saveStudentEdit(){
+  const name=document.getElementById('es-name').value.trim(); if(!name){document.getElementById('es-name').focus();return;}
+  const idx=document.getElementById('es-idx').value.trim();
+  const phone=document.getElementById('es-phone').value.trim()||'—';
+  const courses=[...document.querySelectorAll('#es-courses input:checked')].map(x=>x.value);
+  if(editStudentId){ const s=STUDENTS.find(x=>x.id===editStudentId); s.name=name;s.idx=idx;s.phone=phone;s.courses=courses; }
+  else STUDENTS.push({id:nextId++,name,idx,phone,courses});
+  closeModal('studentModal');
+  if(currentCourseId) renderCourseTable();
+  renderHome();
+}
+function confirmDeleteStudent(){
+  STUDENTS=STUDENTS.filter(s=>s.id!==editStudentId);
+  closeModal('studentModal');
+  if(currentCourseId) renderCourseTable();
+  renderHome();
+}
+function openAddCourseModal(){
+  ['ac-label','ac-group','ac-icon','ac-sup','ac-title','ac-sub'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ac-color').value=PRESETS[nextCI%PRESETS.length];
+  buildPresets('acColorPresets','ac-color');
+  document.getElementById('addCourseModal').classList.add('open');
+}
+function saveNewCourse(){
+  const label=document.getElementById('ac-label').value.trim(); if(!label){document.getElementById('ac-label').focus();return;}
+  const id='c'+Date.now();
+  COURSES.push({id,label,group:document.getElementById('ac-group').value.trim(),accent:document.getElementById('ac-color').value,icon:document.getElementById('ac-icon').value.trim()||'📚',topicSup:document.getElementById('ac-sup').value.trim(),topicTitle:document.getElementById('ac-title').value.trim()||'Topic not yet specified',topicSub:document.getElementById('ac-sub').value.trim()});
+  nextCI++;
+  closeModal('addCourseModal'); renderHome(); openCourse(id);
+}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);}));
+
+/* ── STUDENT SHEET ──────────────────────────────────────── */
+function openStuSheet(sid){
+  const s=STUDENTS.find(x=>x.id===sid); if(!s) return;
+  const fc=COURSES.find(c=>s.courses.includes(c.id));
+  const av=fc?fc.accent:'#374151';
+  document.getElementById('shAv').textContent=initials(s.name);
+  document.getElementById('shAv').style.background=av;
+  document.getElementById('shHero').style.background=`linear-gradient(135deg,${av}33 0%,transparent 80%)`;
+  document.getElementById('shName').textContent=s.name;
+  document.getElementById('shSub').textContent=s.courses.length+' course group'+(s.courses.length!==1?'s':'');
+  document.getElementById('shIdx').textContent=s.idx;
+  document.getElementById('shPhone').textContent=s.phone!=='—'?s.phone:'Not provided';
+  document.getElementById('shGroupCount').textContent=s.courses.length;
+  document.getElementById('shPills').innerHTML=s.courses.map(cid=>{
+    const c=COURSES.find(x=>x.id===cid); if(!c) return '';
+    const cols=cCols(c.accent);
+    return `<span class="sheet-pill" style="background:${cols.tabBg};" onclick="closeStuSheetBtn();openCourse('${c.id}')">${c.icon} ${c.label}${c.group?' · '+c.group:''}<span class="sheet-pill-arr">→</span></span>`;
+  }).join('');
+  document.getElementById('shEditBtn').onclick=()=>{ closeStuSheetBtn(); setTimeout(()=>openStudentEdit(s.id),200); };
+  document.getElementById('stuOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeStuSheet(e){ if(e.target===document.getElementById('stuOverlay')) closeStuSheetBtn(); }
+function closeStuSheetBtn(){ document.getElementById('stuOverlay').classList.remove('open'); document.body.style.overflow=''; }
+
+/* ── CIRCUIT ────────────────────────────────────────────── */
+function drawCircuit(){
+  const h=document.getElementById('hero');
+  const s=document.getElementById('cSvg');
+  const W=h.offsetWidth, H=h.offsetHeight||160;
+  s.setAttribute('viewBox',`0 0 ${W} ${H}`); s.setAttribute('width',W); s.setAttribute('height',H);
+  const dk=document.documentElement.getAttribute('data-theme')==='dark';
+  const lc=dk?'rgba(59,130,246,.16)':'rgba(99,179,237,.18)';
+  const nc=dk?'rgba(96,165,250,.42)':'rgba(147,210,255,.5)';
+  const dc=dk?'rgba(147,197,253,.6)':'rgba(186,230,255,.7)';
+  let seed=42; const rand=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
+  const G=40,cols=Math.ceil(W/G)+1,rows=Math.ceil(H/G)+1;
+  let html='';
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const x=c*G,y=r*G;
+    if(rand()>.55){const l=(Math.floor(rand()*3)+1)*G;html+=`<line x1="${x}" y1="${y}" x2="${Math.min(x+l,W)}" y2="${y}" stroke="${lc}" stroke-width="1"/>`;}
+    if(rand()>.6){const l=(Math.floor(rand()*2)+1)*G;html+=`<line x1="${x}" y1="${y}" x2="${x}" y2="${Math.min(y+l,H)}" stroke="${lc}" stroke-width="1"/>`;}
+  }
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    if(rand()>.72){const x=c*G,y=r*G,big=rand()>.8;
+      if(big){html+=`<circle cx="${x}" cy="${y}" r="5" fill="none" stroke="${nc}" stroke-width="1.2"/><circle cx="${x}" cy="${y}" r="2" fill="${dc}"/>`;}
+      else html+=`<circle cx="${x}" cy="${y}" r="2.5" fill="${nc}"/>`;
+    }
+  }
+  for(let i=0;i<4;i++){const x=Math.floor(rand()*(W-60))+10,y=Math.floor(rand()*(H-30))+5;html+=`<rect x="${x}" y="${y}" width="${Math.floor(rand()*40)+30}" height="${Math.floor(rand()*16)+12}" rx="3" fill="none" stroke="${nc}" stroke-width=".8"/>`;}
+  s.innerHTML=html;
+}
+
+/* ── THEME ──────────────────────────────────────────────── */
+function toggleTheme(){
+  const n=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',n);
+  document.querySelectorAll('#themeBtn, .theme-btn').forEach(b=>b.textContent=n==='dark'?'☀':'🌙');
+  drawCircuit();
+}
+
+/* ── INIT ───────────────────────────────────────────────── */
+showPage('home');
+renderHome();
+drawCircuit();
+window.addEventListener('resize', drawCircuit);
+</script>
+</body>
+</html>
