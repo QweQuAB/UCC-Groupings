@@ -525,7 +525,7 @@ td.ph    { font-size:12px; color:var(--text-sec); }
 <script>
 /* ── DATA ─────────────────────────────────────────────────── */
 let COURSES = [
-  { id:'comm',      label:'Comm Skills',        group:'Group 4', accent:'#1e40af', icon:'✉',  topicSup:'Communicative Skills I · Unit 6 · §4–6 · Group 4',    topicTitle:'Formal Letters: Features, Introduction & Language',  topicSub:'' },
+  { id:'comm',      label:'Comm Skills',        group:'Group 8', accent:'#1e40af', icon:'✉',  topicSup:'Communicative Skills I · Unit 6 · §4–6 · Group 8',    topicTitle:'Formal Letters: Features, Introduction & Language',  topicSub:'' },
   { id:'afr',       label:'African Studies',     group:'Group 4', accent:'#064e3b', icon:'🌍', topicSup:'African Studies · Unit 3 · §5–6',                       topicTitle:'Social Change & the African Family',                 topicSub:'National & International Laws and the Family' },
   { id:'it',        label:'Info Literacy',       group:'Group 1', accent:'#78350f', icon:'🔎', topicSup:'Information Literacy Skills (IT) · Group 1',            topicTitle:'Education and Research',                             topicSub:'' },
   { id:'mgmt',      label:'Intro to Mgmt',       group:'Group 8', accent:'#4c1d95', icon:'📋', topicSup:'Introduction to Management · Unit 3 · §4–6 · Group 8', topicTitle:'Planning as a Management Function',                  topicSub:'' },
@@ -535,32 +535,35 @@ let COURSES = [
 ];
 let STUDENTS = [
   {id:1,  name:'Lawrence Abakah-Turkson',    idx:'BSCIT/CR/01/25/0008', phone:'0244692571', courses:['comm','afr','mgmt']},
-  {id:2,  name:'Abigail Koomson',             idx:'BSCIT/AS/22/25/0001', phone:'0503467585', courses:['comm','afr']},
-  {id:3,  name:'Abdul Jafar Musah Appiah',    idx:'BSCIT/CR/01/25/0006', phone:'0553111756', courses:['comm','afr']},
-  {id:4,  name:'Daniel Golo',                 idx:'BSCIT/CR/01/30/0004', phone:'0559574837', courses:['comm','afr']},
+  {id:2,  name:'Abigail Koomson',             idx:'BSCIT/AS/22/25/0001', phone:'0503467585', courses:['afr']},
+  {id:3,  name:'Abdul Jafar Musah Appiah',    idx:'BSCIT/CR/01/25/0006', phone:'0553111756', courses:['afr']},
+  {id:4,  name:'Daniel Golo',                 idx:'BSCIT/CR/01/30/0004', phone:'0559574837', courses:['afr']},
   {id:5,  name:'Richmond Krampah',            idx:'BSCIT/WR/06/25/0001', phone:'0531863404', courses:['comm','afr','it','mgmt']},
   {id:6,  name:'Salu Haruna',                 idx:'BSCIT/CR/17/25/0001', phone:'0548380326', courses:['comm','afr','sw','access']},
-  {id:7,  name:'Augustine Essel',             idx:'BSCIT/CR/30/25/0001', phone:'0551069398', courses:['comm','afr','it','mgmt','sw','access']},
-  {id:8,  name:'Isaac Baidoo',                idx:'BSCIT/CR/30/25/0002', phone:'0547711296', courses:['comm','afr','mgmt','access']},
-  {id:9,  name:'Andrews Duodu',               idx:'BSCIT/CR/30/25/0004', phone:'0244091829', courses:['comm','afr','it','mgmt','sw','access']},
-  {id:10, name:'Eric Kobina Saah',            idx:'BSCIT/CR/30/25/0006', phone:'0543370067', courses:['comm','afr','access']},
+  {id:7,  name:'Augustine Essel',             idx:'BSCIT/CR/30/25/0001', phone:'0551069398', courses:['afr','it','mgmt','sw','access']},
+  {id:8,  name:'Isaac Baidoo',                idx:'BSCIT/CR/30/25/0002', phone:'0547711296', courses:['afr','mgmt','access']},
+  {id:9,  name:'Andrews Duodu',               idx:'BSCIT/CR/30/25/0004', phone:'0244091829', courses:['afr','it','mgmt','sw','access']},
+  {id:10, name:'Eric Kobina Saah',            idx:'BSCIT/CR/30/25/0006', phone:'0543370067', courses:['afr','access']},
   {id:11, name:'John Bonal Essuman',          idx:'BSCIT/CR/30/25/0009', phone:'0554141150', courses:['comm','afr','it','mgmt','sw','access','computing']},
-  {id:12, name:'Geli Michael Kofi',           idx:'BSCIT/CR/30/25/0012', phone:'0546831183', courses:['comm','afr','access','computing']},
+  {id:12, name:'Geli Michael Kofi',           idx:'BSCIT/CR/30/25/0012', phone:'0546831183', courses:['afr','access','computing']},
   {id:13, name:'Patience Appiah',             idx:'BSCIT/CR/30/25/0014', phone:'0508325698', courses:['comm','afr','sw','access']},
-  {id:14, name:'Blessing Annan-Takyi',        idx:'BSCIT/CR/30/25/0017', phone:'0557296234', courses:['comm','afr','it','mgmt','sw','access']},
+  {id:14, name:'Blessing Annan-Takyi',        idx:'BSCIT/CR/30/25/0017', phone:'0557296234', courses:['afr','it','mgmt','sw','access']},
   {id:15, name:'Samuel Odartey Lamptey',      idx:'BSCIT/CR/30/25/0005', phone:'—',          courses:['comm','afr','it','mgmt','sw','access','computing']},
   {id:16, name:'Nkwantabisah John Klyphord',  idx:'BSCIT/CR/30/25/0018', phone:'0248136699', courses:['comm','afr','it','mgmt','sw','access']},
-  {id:17, name:'Jacob Appiah',                idx:'BSCIT/CR/01/25/0009', phone:'0245604128', courses:['comm','afr']},
+  {id:17, name:'Jacob Appiah',                idx:'BSCIT/CR/01/25/0009', phone:'0245604128', courses:['afr']},
   {id:18, name:'Michael Sackey',              idx:'BSCIT/CR/30/25/0016', phone:'0532918637', courses:['comm','afr','sw','access']},
   {id:19, name:'Godfred Armah',               idx:'BSCIT/SR/30/25/0001', phone:'—',          courses:['sw']},
   {id:20, name:'Blude Stephen Kwasi',         idx:'BSCIT/CR/01/25/0018', phone:'—',          courses:['access']},
   {id:21, name:'Student (BSCIT/CR/30/25/0013)', idx:'BSCIT/CR/30/25/0013', phone:'—',        courses:['computing']},
   {id:22, name:'Online Student 1',            idx:'— (Online)',           phone:'—',          courses:['computing']},
-  {id:23, name:'Online Student 2',            idx:'— (Online)',           phone:'—',          courses:['computing']}
+  {id:23, name:'Online Student 2',            idx:'— (Online)',           phone:'—',          courses:['computing']},
+
+  // ── Comm Skills Group 8 addition ──
+  {id:77, name:'Obed Adokoh',              idx:'CD/ITE/CR/30/25/0005',   phone:'0545233485', courses:['comm']},
 ];
 
 const PRESETS = ['#1e40af','#064e3b','#78350f','#4c1d95','#164e63','#9d174d','#7f1d1d','#1e3a5f','#365314','#431407'];
-let nextId = 24, nextCI = 0;
+let nextId = 78, nextCI = 0;
 let currentCourseId = null;
 let sortKey = 'name', sortDir = 1;
 let editCourseId = null, editStudentId = null;
